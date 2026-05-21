@@ -6,6 +6,9 @@
 #  DNS: bind, зоны au-team.irpo, 1.168.192, 2.168.192
 # ============================================================
 set -e
+# Защита от дублей при повторном запуске
+ALREADY_CONFIGURED=false
+grep -q 'au-team.irpo' /etc/named.conf 2>/dev/null && ALREADY_CONFIGURED=true
 
 echo "=== [1] Имя хоста ==="
 hostnamectl set-hostname hq-srv.au-team.irpo
@@ -43,7 +46,8 @@ sed -i 's/dnssec-validation yes;/dnssec-validation no;/' /etc/named.conf
 grep -q 'forwarders' /etc/named.conf || \
     sed -i '/recursion yes;/a\\tforwarders { 8.8.8.8; 1.1.1.1; };' /etc/named.conf
 
-# Зоны (добавляем перед последней закрывающей скобкой)
+# Зоны — добавляем только если их ещё нет
+if [ "$ALREADY_CONFIGURED" = false ]; then
 cat >> /etc/named.conf <<'EOF'
 
 zone "au-team.irpo" {
@@ -61,6 +65,7 @@ zone "2.168.192.in-addr.arpa" {
         file "master/2.db";
 };
 EOF
+fi # конец блока добавления зон
 
 echo "=== [6] Создание папки зон ==="
 mkdir -p /var/named/master

@@ -18,7 +18,7 @@ echo "=== [2] Часовой пояс ==="
 timedatectl set-timezone Europe/Moscow
 
 echo "=== [3] Форвардинг ==="
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+grep -q "net.ipv4.ip_forward" /etc/sysctl.conf || echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sysctl -p
 
 echo "=== [4] Установка пакетов ==="
@@ -124,7 +124,8 @@ table inet nat {
     }
 }
 EOF
-echo 'include "/etc/nftables/hq_nat.nft"' >> /etc/sysconfig/nftables.conf
+grep -q 'hq_nat.nft' /etc/sysconfig/nftables.conf || \
+    echo 'include "/etc/nftables/hq_nat.nft"' >> /etc/sysconfig/nftables.conf
 systemctl enable --now nftables
 systemctl restart nftables
 
