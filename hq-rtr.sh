@@ -9,7 +9,7 @@
 #  NAT: oifname ens160
 #  OSPF: tun1, сети 10.0.0.0/30 + все VLAN
 # ============================================================
-set -e
+# set -e убран чтобы скрипт не падал на ошибках nmcli
 
 echo "=== [1] Имя хоста ==="
 hostnamectl set-hostname hq-rtr.au-team.irpo
