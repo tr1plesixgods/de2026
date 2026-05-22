@@ -88,23 +88,12 @@ systemctl enable --now nftables
 systemctl restart nftables
 
 echo "=== [10] Пользователи ==="
-useradd sshuser -u 1010 -U 2>/dev/null || true
-echo "sshuser:P@ssw0rd" | chpasswd
-echo "sshuser ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sshuser
-chmod 440 /etc/sudoers.d/sshuser
 
 useradd net_admin -U 2>/dev/null || true
 echo "net_admin:P@ssw0rd" | chpasswd
 echo "net_admin ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/net_admin
 chmod 440 /etc/sudoers.d/net_admin
 
-echo "=== [11] SSH ==="
-echo "Authorized access only" > /etc/ssh/banner_ssh
-sed -i 's/^#\?Port .*/Port 2024/' /etc/ssh/sshd_config
-sed -i 's/^#\?MaxAuthTries .*/MaxAuthTries 2/' /etc/ssh/sshd_config
-sed -i 's/^#\?Banner .*/Banner \/etc\/ssh\/banner_ssh/' /etc/ssh/sshd_config
-grep -q "^AllowUsers" /etc/ssh/sshd_config || echo "AllowUsers sshuser" >> /etc/ssh/sshd_config
-systemctl enable sshd && systemctl restart sshd
 
 echo "=== BR-RTR ГОТОВ ==="
 ip -br a

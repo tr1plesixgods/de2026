@@ -127,19 +127,7 @@ named-checkconf && echo "named.conf OK"
 named-checkzone au-team.irpo /var/named/master/au-team.db
 systemctl enable --now named
 
-echo "=== [12] Пользователь sshuser ==="
-useradd sshuser -u 1010 -U 2>/dev/null || true
-echo "sshuser:P@ssw0rd" | chpasswd
-echo "sshuser ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sshuser
-chmod 440 /etc/sudoers.d/sshuser
 
-echo "=== [13] SSH ==="
-echo "Authorized access only" > /etc/ssh/banner_ssh
-sed -i 's/^#\?Port .*/Port 2024/' /etc/ssh/sshd_config
-sed -i 's/^#\?MaxAuthTries .*/MaxAuthTries 2/' /etc/ssh/sshd_config
-sed -i 's/^#\?Banner .*/Banner \/etc\/ssh\/banner_ssh/' /etc/ssh/sshd_config
-grep -q "^AllowUsers" /etc/ssh/sshd_config || echo "AllowUsers sshuser" >> /etc/ssh/sshd_config
-systemctl enable sshd && systemctl restart sshd
 
 echo "=== HQ-SRV ГОТОВ ==="
 ip -br a
