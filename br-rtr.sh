@@ -41,12 +41,12 @@ nmcli connection up ens192
 echo "=== [7] GRE туннель tun1 → HQ-RTR ==="
 nmcli connection delete tun1 2>/dev/null || true
 nmcli connection add type ip-tunnel con-name tun1 ifname tun1 \
-    tunnel.mode gre \
-    tunnel.parent ens160 \
-    tunnel.local 172.16.2.2 \
-    tunnel.remote 172.16.1.2 \
+    ip-tunnel.mode gre \
+    ip-tunnel.parent ens160 \
+    ip-tunnel.local 172.16.2.2 \
+    ip-tunnel.remote 172.16.1.2 \
+    ip-tunnel.ttl 64 \
     ipv4.method manual ipv4.addresses 10.0.0.2/30 ipv6.method ignore
-nmcli connection modify tun1 ip-tunnel.ttl 64
 nmcli connection up tun1
 
 echo "=== [8] OSPF через FRR ==="
